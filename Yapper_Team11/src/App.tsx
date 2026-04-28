@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import { HStack, Button} from "@chakra-ui/react"
+import { Button, HStack } from "@chakra-ui/react"
 
 function App() {
   const [count, setCount] = useState(0)
@@ -29,10 +29,10 @@ function App() {
         >
           Count is {count}
         </button>
-            <HStack>
-      <Button>Click me</Button>
-      <Button>Click me</Button>
-    </HStack>
+        <HStack>
+          <Button>Click me</Button>
+          <Button>Click me</Button>
+        </HStack>
       </section>
 
       <div className="ticks"></div>
