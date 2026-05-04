@@ -10,38 +10,41 @@ import {
   Avatar,
   Badge,
 } from "@chakra-ui/react";
+import tweetsData from "./data/tweets.json";
+import type { Tweet } from "./types/Tweet";
+import { useState } from "react";
 
 function App() {
+  // Tweets is the current list of tweets shown
+  // setTweets is how React updates whats shown
+  // We start with tweets from our json file
+  const [tweets, setTweets] = useState<Tweet[]>(tweetsData as Tweet[])
 
-    const tweets = [
-  {
-    "name": "Maya Johnson",
-    "username": "@maya_codes",
-    "createdAt": "2026-05-03T09:58:00.000Z",
-    "text": "Just got my first React page running. Components are starting to make sense.",
-    "likes": 14,
-    "replies": 3,
-    "tag": "Web Dev"
-  },
-  {
-    "name": "Ethan Brooks",
-    "username": "@ethanbuilds",
-    "createdAt": "2026-05-02T09:48:00.000Z",
-    "text": "Hardcoding data first helps me focus on the page layout before adding real input.",
-    "likes": 22,
-    "replies": 5,
-    "tag": "React"
-  },
-  {
-    "name": "Ava Smith",
-    "username": "@ava_secure",
-    "createdAt": "2026-05-01T09:35:00.000Z",
-    "text": "A .map() lets us turn an array of data into repeated cards on the screen.",
-    "likes": 31,
-    "replies": 8,
-    "tag": "Cyber 301"
+  // input is what is currently typed in the box
+  // setInput is how React knows about newly typed data
+  const [input, setInput] = useState("");
+
+  // This function runs when we click the yap button
+  const handleYapClick = () => {
+    // If input is empty or only white spaces, stop
+    if(!input.trim()) return;
+    const newTweet: Tweet ={
+      id: Date.now(),
+      name: "JoeSmoe",
+      username: "@you",
+      createdAt: new Date().toISOString(),
+      text: input.trim(),
+      likes: 0,
+      replies: 0,
+      tag: ""
+    }
+    // put new tweet first
+    setTweets([newTweet, ...tweets]);
+    // Clear input box for new tweets
+    setInput("")
   }
-];
+
+
 
   // Save the current time once during this render.
   const currentTime = new Date().toISOString();
@@ -65,7 +68,7 @@ function App() {
       <Container maxW="650px">
         <VStack gap={5} align="stretch">
           <Box bg="gray.800" p={6} borderRadius="2xl" boxShadow="md">
-            <Heading size="lg" color="white">]\\[]\[][``]
+            <Heading size="lg" color="white">
               Sneak-Peak
             </Heading>
             <Text color="gray.400" mt={2}>
@@ -83,8 +86,14 @@ function App() {
                 bg="gray.700"
                 borderColor="gray.600"
                 color="white"
+                value={input}
+                // every time user types, we update
+                onChange={(userInput) => setInput(userInput.target.value)}
               />
-              <Button colorScheme="twitter" alignSelf="flex-end">
+              <Button colorScheme="twitter" alignSelf="flex-end"
+                // when clicked, run handleYap
+                onClick={handleYapClick}
+              >
                 Yap
               </Button>
             </VStack>
