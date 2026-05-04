@@ -1,3 +1,7 @@
+
+import {useState} from "react";
+import tweetsData from "./data/tweets.json";
+import type { Tweet } from "./types/Tweet";
 import {
   Badge,
   Box,
@@ -11,36 +15,32 @@ import {
 } from "@chakra-ui/react";
 
 function App() {
-  const tweets = [
-  {
-    "name": "Maya Johnson",
-    "username": "@maya_codes",
-    "createdAt": "2026-05-03T09:58:00.000Z",
-    "text": "Just got my first React page running. Components are starting to make sense.",
-    "likes": 14,
-    "replies": 3,
-    "tag": "Web Dev"
-  },
-  {
-    "name": "Ethan Brooks",
-    "username": "@ethanbuilds",
-    "createdAt": "2026-05-02T09:48:00.000Z",
-    "text": "Hardcoding data first helps me focus on the page layout before adding real input.",
-    "likes": 22,
-    "replies": 5,
-    "tag": "React"
-  },
-  {
-    "name": "Ava Smith",
-    "username": "@ava_secure",
-    "createdAt": "2026-05-01T09:35:00.000Z",
-    "text": "A .map() lets us turn an array of data into repeated cards on the screen.",
-    "likes": 31,
-    "replies": 8,
-    "tag": "Cyber 301"
-  }
-];
+  // Tweets is the current list of tweets on the page
+  // setTweets is how React updates the list of tweets
+  // We start with the tweets fom the json file
+  const [tweets, setTweets] = useState<Tweet[]>(tweetsData as Tweet[]);
+  // input is what is currently typed in the box
+  // setInput is how react updates it.
+  const [input, setInput] = useState("");
+  // what happens when user clicks yap button
+  const handleYap = () => {
+    // if input is empty, stop
+    if(!input.trim()) return;
 
+    const newTweet: Tweet ={
+      id: Date.now(),
+      name: "JoeSmoe",
+      username: "@you",
+      createdAt: new Date().toISOString(),
+      text: input.trim(),
+      likes: 0
+    }
+    // put new tweet first then copy old tweets
+    setTweets([newTweet, ...tweets]);
+    setInput("");
+  }
+  
+  
   // Save the current time once during this render.
   const currentTime = new Date().toISOString();
 
@@ -82,8 +82,13 @@ function App() {
                 bg="gray.700"
                 borderColor="gray.600"
                 color="white"
+                value={input}
+                // Every time the user types, update input
+                onChange={(userText)=> setInput(userText.target.value)}
               />
-              <Button alignSelf="flex-end" bg="blue.500" color="white">
+              <Button alignSelf="flex-end" bg="blue.500" color="white"
+              onClick={handleYap}
+              >
                 Yap
               </Button>
             </VStack>
@@ -117,8 +122,8 @@ function App() {
                 <Text color="white">{tweet.text}</Text>
 
                 <HStack gap={6} color="gray.400" fontSize="sm">
-                  <Text>💬 {tweet.replies}</Text>
-                  <Text>❤️ {tweet.likes}</Text>
+                  <Text>💬 {tweet.replies ?? 0}</Text>
+                  <Text>❤️ {tweet.likes ?? 0}</Text>
                   <Text>🔁 Share</Text>
                 </HStack>
               </VStack>
