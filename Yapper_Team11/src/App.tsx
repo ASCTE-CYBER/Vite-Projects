@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Badge,
   Box,
@@ -9,37 +10,38 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import tweetsData from "./data/tweets.json"
+import type { Tweet } from "./types/Tweet"
+
 
 function App() {
-  const tweets = [
-  {
-    "name": "Maya Johnson",
-    "username": "@maya_codes",
-    "createdAt": "2026-05-03T09:58:00.000Z",
-    "text": "Just got my first React page running. Components are starting to make sense.",
-    "likes": 14,
-    "replies": 3,
-    "tag": "Web Dev"
-  },
-  {
-    "name": "Ethan Brooks",
-    "username": "@ethanbuilds",
-    "createdAt": "2026-05-02T09:48:00.000Z",
-    "text": "Hardcoding data first helps me focus on the page layout before adding real input.",
-    "likes": 22,
-    "replies": 5,
-    "tag": "React"
-  },
-  {
-    "name": "Ava Smith",
-    "username": "@ava_secure",
-    "createdAt": "2026-05-01T09:35:00.000Z",
-    "text": "A .map() lets us turn an array of data into repeated cards on the screen.",
-    "likes": 31,
-    "replies": 8,
-    "tag": "Cyber 301"
-  }
-];
+  // tweets is the current list of tweets on the page
+  // setTweets is how react updates the list of tweets
+  // We start with tweets from the JSON file
+  const [tweets, setTweets] = useState<Tweet[]>(tweetsData as Tweet[])
+
+  //input is what is currently typed in the box
+  // setInput is how we hook into it
+  const [input, setInput] = useState("")
+
+  const handleYap = () => {
+    // if input is empty, stop the function
+      if(!input.trim()) return;
+      const newTweet: Tweet = {
+        id: Date.now(),
+        name: "JoeSmoe",
+        username: "@you",
+        createdAt: new Date().toISOString(),
+        text: input.trim(),
+        likes: 0,
+        replies: 0,
+        tag: "",
+      }
+      // Put new tweet first, then copy all old tweets
+      setTweets([newTweet, ...tweets]);
+      // clear the input box after posting
+      setInput("");
+  };
 
   // Save the current time once during this render.
   const currentTime = new Date().toISOString();
@@ -82,8 +84,14 @@ function App() {
                 bg="gray.700"
                 borderColor="gray.600"
                 color="white"
+                value={input}
+                // Every time user types, we update input
+                onChange={(e) => setInput(e.target.value)}
               />
-              <Button alignSelf="flex-end" bg="blue.500" color="white">
+              <Button alignSelf="flex-end" bg="blue.500" color="white"
+                 onClick={handleYap}
+              >
+           
                 Yap
               </Button>
             </VStack>
