@@ -10,15 +10,28 @@ import {
   Avatar,
   Badge,
 } from "@chakra-ui/react";
-import tweetsData from "./data/tweets.json";
 import type { Tweet } from "./types/Tweet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "./utils/supabase";
 
 function App() {
   // Tweets is the current list of tweets shown
   // setTweets is how React updates whats shown
-  // We start with tweets from our json file
-  const [tweets, setTweets] = useState<Tweet[]>(tweetsData as Tweet[])
+  // We start with no tweets
+  const [tweets, setTweets] = useState<Tweet[]>([]);
+  useEffect(() => {
+    async function load() {
+      const { data, error } = await supabase
+        .from("tweets")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) console.error(error);
+      else setTweets(data || []);
+    }
+
+    load();
+  }, []);
 
   // input is what is currently typed in the box
   // setInput is how React knows about newly typed data
