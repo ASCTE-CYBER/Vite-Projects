@@ -1,6 +1,6 @@
 
-import {useState} from "react";
-import tweetsData from "./data/tweets.json";
+import { useEffect, useState } from "react";
+import { supabase } from "./utils/supabase";
 import type { Tweet } from "./types/Tweet";
 import {
   Badge,
@@ -17,8 +17,23 @@ import {
 function App() {
   // Tweets is the current list of tweets on the page
   // setTweets is how React updates the list of tweets
-  // We start with the tweets fom the json file
-  const [tweets, setTweets] = useState<Tweet[]>(tweetsData as Tweet[]);
+  // We start with empty array
+  const [tweets, setTweets] = useState<Tweet[]>([]);
+  useEffect(() => {
+  async function load() {
+    const { data, error } = await supabase
+      .from("tweets")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) console.error(error);
+    else setTweets(data || []);
+  }
+
+  load();
+}, []);
+
+
   // input is what is currently typed in the box
   // setInput is how react updates it.
   const [input, setInput] = useState("");
